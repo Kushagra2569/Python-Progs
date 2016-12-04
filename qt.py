@@ -19,7 +19,7 @@ class display(QWidget):
         self.button.resize(self.button.sizeHint())
         self.button.clicked.connect(self.msg)
         
-        self.button.setToolTip('Fuck bitches get money')
+        self.button.setToolTip('sample tooltip')
 
         btn1 = QPushButton('Pause',self)
         btn1.move(150,50)
