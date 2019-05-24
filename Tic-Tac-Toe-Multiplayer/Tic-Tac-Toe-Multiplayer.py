@@ -1,10 +1,26 @@
 import socket
+import time
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.bind(('',789))
 
 print('server started and listening on port 789')
 
+s.listen(5)
+c,addr = s.accept()
+print('client at '+str(addr)+'connected')
+c.send('Thank you for connecting'.encode())
+c.send('Press 1 whenever you are ready to play'.encode())
+u = 0
+while u != 1:
+    time.sleep(1)
+    u = c.recv(10)
+    if not u:
+        break
+
+
+print('Game Start')
 
 def game():
     arr = [0] * 3
