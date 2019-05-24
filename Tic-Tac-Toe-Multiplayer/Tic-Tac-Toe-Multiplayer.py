@@ -15,23 +15,42 @@ c.send('Press 1 whenever you are ready to play'.encode())
 u = 0
 while u != 1:
     time.sleep(1)
-    u = c.recv(10)
-    if not u:
-        break
-
+    print('enter response')
+    u = int(c.recv(10).decode())
+    
 
 print('Game Start')
+
+
+
+def p2Input():
+    c.send('p2 enter a position'.encode())
+    c.send('1'.encode())
+    data = -1
+    while data == -1:
+        time.sleep(1)
+        data = c.recv(10).decode()
+        if not data:
+            break
+
+    return data
+
+def p2close(message):
+    c.send(message.encode())
+    time.sleep(1)
+    c.send('0'.encode())
+        
 
 def game():
     arr = [0] * 3
     for i in range(3):
         arr[i] = [0] * 3
-    c = 0
+    cFlag = 0
     posDict = {'0':[0,0] ,'1':[0,1] ,'2':[0,2] ,'3':[1,0] ,'4':[1,1] ,'5':[1,2] ,'6':[2,0] ,'7':[2,1] ,'8':[2,2]}
 
-    while(c == 0):
+    while(cFlag == 0):
         if checkDraw(arr):
-            c = -1
+            cFlag = -1
             break
         a = input('p1 enter a position\n')
         if((arr[posDict[a][0]][posDict[a][1]]) != 0):
@@ -45,16 +64,18 @@ def game():
         else:
             arr[posDict[a][0]][posDict[a][1]] = 1
             if checkWin(arr):
-                c = 1
+                cFlag = 1
                 break
         if checkDraw(arr):
-            c = -1
+            cFlag = -1
             break
-        b = input('p2 enter a position\n')
+
+        print('waiting for player 2 ...')
+        b = p2Input()
         if((arr[posDict[b][0]][posDict[b][1]]) != 0):
             print('this position is already taken')
             while True:
-                b = input('p2 enter a position\n')
+                b = p2Input()
                 if((arr[posDict[b][0]][posDict[b][1]]) != 0):
                     print('this position is already taken')
                 else:
@@ -62,14 +83,17 @@ def game():
         else:
             arr[posDict[b][0]][posDict[b][1]] = 2
             if checkWin(arr):
-                c = 2
+                cFlag = 2
                 break
-    if c == 1:
+    if cFlag == 1:
         print('player 1 won')
-    elif c == 2:
+        p2close('player 1 won')
+    elif cFlag == 2:
         print('player 2 won')
-    elif c == -1:
+        p2close('You Won')
+    elif cFlag == -1:
         print('its a draw')
+        p2close('Its a Draw')
         
         
     print(arr)
